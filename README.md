@@ -123,35 +123,15 @@ Installing collected packages: MarkupSafe, Werkzeug, zipp, typing-extensions, im
     running install_lib
     creating /usr/local/lib/python3.7/site-packages/markupsafe
     error: could not create '/usr/local/lib/python3.7/site-packages/markupsafe': Permission denied
-    
-    ----------------------------------------
-Command "/usr/local/bin/python -u -c "import setuptools, tokenize;__file__='/tmp/pip-install-wj4iufrq/MarkupSafe/setup.py';f=getattr(tokenize, 'open', open)(__file__);code=f.read().replace('\r\n', '\n');f.close();exec(compile(code, __file__, 'exec'))" install --record /tmp/pip-record-qn1pq3ak/install-record.txt --single-version-externally-managed --compile" failed with error code 1 in /tmp/pip-install-wj4iufrq/MarkupSafe/
-You are using pip version 19.0.3, however version 23.0.1 is available.
-You should consider upgrading via the 'pip install --upgrade pip' command.
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (test)
-Stage "test" skipped due to earlier failure(s)
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] }
-$ docker stop --time=1 7dd718bbc2be9b22d697629d47687e2b349af5df4941ca7cc995711d45073c2e
-$ docker rm -f --volumes 7dd718bbc2be9b22d697629d47687e2b349af5df4941ca7cc995711d45073c2e
-[Pipeline] // withDockerContainer
-[Pipeline] }
-[Pipeline] // withEnv
-[Pipeline] }
-[Pipeline] // node
-[Pipeline] End of Pipeline
-ERROR: script returned exit code 1
-Finished: FAILURE
+...    
 ```
 
 ## try again with ubuntu install
 
 Thinking the problem is that `jenkins` is running as me, not as
 user `jenkins`. Try the `apt-get` route to install debian/ubuntu packages...
+
+- https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
 
 ```
 10156  4/10/2023 13:48  curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \\n  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
@@ -168,4 +148,60 @@ deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/d
 Now go to localhost port 8080 and redo the above user creation and
 plugin installs...
 
+Need to put jenkins user in *docker* group??? But can't with my 
+current LDAP setup (jenkins user is defined locally on my workstation,
+and docker group is defined in LDAP).
 
+## chmod the socket??
+
+```
+10011  4/10/2023 16:29  sudo systemctl start docker.service
+10013  4/10/2023 16:29  sudo chmod 666 /var/run/docker.sock
+10014  4/10/2023 16:29  sudo chgrp docker /var/run/docker.sock
+10015  4/10/2023 16:29  sudo systemctl status docker.service
+10016  4/10/2023 16:30  docker images
+10017  4/10/2023 16:30  ls -la /var/run/docker.sock
+```
+
+Not a great solution, but just trying to get this running to see
+how it all works. If this works, I will set up a new VM and install
+docker and jenkins on the VM.
+
+## need to add args
+
+Still doesn't work, because now the user in the docker contained
+is just my jenkins uid (130), but that still doesn't have write
+permission to `/.config` or `/.local`.
+
+Try changing the user to root or the home dir to /tmp??
+
+```
+pipeline {
+    agent { 
+        docker { 
+            image 'python:3.10.7-alpine'
+            args '-e HOME=/tmp/home'
+        } 
+    }
+    stages {
+        stage('build') {
+            steps {
+                sh 'python --version'
+                sh 'ls -al /'
+                sh 'id'
+                sh 'ls -al /usr/local'
+                sh 'pip install pip --upgrade'
+                sh 'pip install flask'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'python test.py'
+            }
+            post {
+                always {junit 'test-reports/*.xml'}
+            }
+        }
+    }
+}
+```
