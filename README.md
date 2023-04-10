@@ -62,7 +62,7 @@ pipeline {
 ## added Pipeline
 
 - Pipeline script from SCM
-- SCP set to Git with url: https://github.com/jeffknerr/jenkins-flask-test
+- SCM set to Git with url: https://github.com/jeffknerr/jenkins-flask-test
 - set branch to be "main" not "master"
 - save
 
@@ -244,3 +244,31 @@ pipeline {
 }
 
 ```
+
+# It worked!!
+
+Summary:
+- install docker
+- install jenkins
+- log in to jenkins
+- install docker pipeline plugin in jenkins
+- create a pipeline in jenkins that (SCM/GIT url)
+- allow jenkins user to use docker socket
+- set up flask app/repo
+- set up unit tests for flask app
+- install Jenkinsfile in flask repo
+- make sure jenkins user can write to docker filesystem (ie, change
+  to /tmp inside the docker fs)
+- click the BuildNow in jenkins dashboard/pipeline
+- watch the tests run and succeed
+
+## ToDo/Still don't understand
+
+So all I did was set up a button (BuildNow) which will run a docker
+image, git clone my repo to it, pip install some stuff, and then
+run my python unit tests. 
+
+What else can I do with this?? How to deploy to a real server (after
+the tests succeed)??
+
+
