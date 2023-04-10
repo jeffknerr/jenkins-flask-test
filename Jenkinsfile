@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'python --version'
                 sh 'ls -al /'
-                sh 'whoami'
+                sh 'id'
                 sh 'ls -al /usr/local'
                 sh 'pip install pip --upgrade'
                 sh 'pip install flask'
