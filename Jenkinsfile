@@ -14,6 +14,7 @@ pipeline {
                 sh 'ls -al /usr/local'
                 sh 'pip install pip --upgrade'
                 sh 'pip install flask'
+                sh 'pip install xmlrunner'
             }
         }
         stage('test') {
