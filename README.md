@@ -36,3 +36,33 @@ Ran 1 test in 0.012s
 
 OK
 ```
+
+## added Jenkinsfile
+
+```
+pipeline {
+    agent { docker { image 'python:3.7.2' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'pip install flask
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'python test.py'
+            }
+        }
+    }
+}
+```
+
+## already installed jenkins above
+
+## added Pipeline
+
+- Pipeline script from SCM
+- SCP set to Git with url: https://github.com/jeffknerr/jenkins-flask-test
+- save
+
+
