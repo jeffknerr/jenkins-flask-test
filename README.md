@@ -86,3 +86,63 @@ in Jenkinsfile
             post {
                 always {junit 'test-reports/*.xml'}
 ```
+
+## need to start docker service
+
+```
+10091* 4/10/2023 12:58  ps -ef | grep docker
+10093* 4/10/2023 12:59  sudo systemctl start docker.service
+10094* 4/10/2023 12:59  sudo systemctl status docker.service
+10095* 4/10/2023 12:59  docker images
+```
+
+## also need apparmor running???!?!?
+
+```
+10096* 4/10/2023 13:01  dpkg -l | grep apparmor
+10097* 4/10/2023 13:01  sudo apt-get install apparmor
+10115* 4/10/2023 13:09  sudo apt-get install apparmor-utils apparmor-profiles apparmor-profiles-extra vim-addon-manager
+10116* 4/10/2023 13:09  sudo systemctl restart docker.service
+10117* 4/10/2023 13:09  sudo systemctl restart apparmor.service
+```
+
+## still failing....
+
+Are these errors in the docker container???
+
+```
+Installing collected packages: MarkupSafe, Werkzeug, zipp, typing-extensions, importlib-metadata, Jinja2, click, itsdangerous, flask
+  Running setup.py install for MarkupSafe: started
+    Running setup.py install for MarkupSafe: finished with status 'error'
+    Complete output from command /usr/local/bin/python -u -c "import setuptools, tokenize;__file__='/tmp/pip-install-wj4iufrq/MarkupSafe/setup.py';f=getattr(tokenize, 'open', open)(__file__);code=f.read().replace('\r\n', '\n');f.close();exec(compile(code, __file__, 'exec'))" install --record /tmp/pip-record-qn1pq3ak/install-record.txt --single-version-externally-managed --compile:
+...
+...
+    gcc -pthread -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -fPIC -I/usr/local/include/python3.7m -c src/markupsafe/_speedups.c -o build/temp.linux-x86_64-3.7/src/markupsafe/_speedups.o
+    gcc -pthread -shared build/temp.linux-x86_64-3.7/src/markupsafe/_speedups.o -L/usr/local/lib -lpython3.7m -o build/lib.linux-x86_64-3.7/markupsafe/_speedups.cpython-37m-x86_64-linux-gnu.so
+    running install_lib
+    creating /usr/local/lib/python3.7/site-packages/markupsafe
+    error: could not create '/usr/local/lib/python3.7/site-packages/markupsafe': Permission denied
+    
+    ----------------------------------------
+Command "/usr/local/bin/python -u -c "import setuptools, tokenize;__file__='/tmp/pip-install-wj4iufrq/MarkupSafe/setup.py';f=getattr(tokenize, 'open', open)(__file__);code=f.read().replace('\r\n', '\n');f.close();exec(compile(code, __file__, 'exec'))" install --record /tmp/pip-record-qn1pq3ak/install-record.txt --single-version-externally-managed --compile" failed with error code 1 in /tmp/pip-install-wj4iufrq/MarkupSafe/
+You are using pip version 19.0.3, however version 23.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (test)
+Stage "test" skipped due to earlier failure(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 7dd718bbc2be9b22d697629d47687e2b349af5df4941ca7cc995711d45073c2e
+$ docker rm -f --volumes 7dd718bbc2be9b22d697629d47687e2b349af5df4941ca7cc995711d45073c2e
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE
+```
