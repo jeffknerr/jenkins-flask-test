@@ -208,7 +208,7 @@ pipeline {
 
 At least made it past the build stage!!
 
-![another jenkins fail...](jenkinsfail.jpg)
+![another jenkins fail...](https://github.com/jeffknerr/jenkins-flask-test/blob/main/jenkinsfail.png)
 
 ## add xmlrunner
 
