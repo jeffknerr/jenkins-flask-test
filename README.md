@@ -65,4 +65,24 @@ pipeline {
 - SCP set to Git with url: https://github.com/jeffknerr/jenkins-flask-test
 - save
 
+## test report xml stuff??
 
+in test.py
+
+```
+if __name__ == '__main__':
+    import xmlrunner
+    runner = xmlrunner.XMLTestRunner(output='test-reports')
+    unittest.main(testRunner=runner)
+```
+
+in Jenkinsfile
+
+```
+        stage('test') {
+            steps {
+                sh 'python test.py'
+            }
+            post {
+                always {junit 'test-reports/*.xml'}
+```
