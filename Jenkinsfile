@@ -4,9 +4,10 @@ pipeline {
         stage('build') {
             steps {
                 sh 'python --version'
-                sh 'ls -al /.cache'
-                sh 'ls -al /.local'
+                sh 'ls -al /'
                 sh 'whoami'
+                sh 'ls -al /usr/local'
+                sh 'pip install pip --upgrade'
                 sh 'pip install flask'
             }
         }
