@@ -63,6 +63,7 @@ pipeline {
 
 - Pipeline script from SCM
 - SCP set to Git with url: https://github.com/jeffknerr/jenkins-flask-test
+- set branch to be "main" not "master"
 - save
 
 ## test report xml stuff??
@@ -146,3 +147,25 @@ $ docker rm -f --volumes 7dd718bbc2be9b22d697629d47687e2b349af5df4941ca7cc995711
 ERROR: script returned exit code 1
 Finished: FAILURE
 ```
+
+## try again with ubuntu install
+
+Thinking the problem is that `jenkins` is running as me, not as
+user `jenkins`. Try the `apt-get` route to install debian/ubuntu packages...
+
+```
+10156  4/10/2023 13:48  curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \\n  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+10163  4/10/2023 13:50  sudo vim  /etc/apt/sources.list.d/jenkins.list
+deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+10164  4/10/2023 13:50  sudo apt update
+10165  4/10/2023 13:51  sudo apt install jenkins
+10166  4/10/2023 13:51  ps -ef | grep jenk
+10167  4/10/2023 13:52  java --version
+10168  4/10/2023 13:52  sudo systemctl status jenkins
+10169  4/10/2023 13:53  sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+Now go to localhost port 8080 and redo the above user creation and
+plugin installs...
+
+
