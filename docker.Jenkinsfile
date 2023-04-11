@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent { 
+        docker { 
+            image 'python:3.10.7-alpine'
+            args '-e HOME=/tmp/home'
+        } 
+    }
     stages {
         stage('build') {
             steps {
@@ -10,8 +15,6 @@ pipeline {
                 sh 'pip install pip --upgrade'
                 sh 'pip install flask'
                 sh 'pip install xmlrunner'
-                sh 'pip install gunicorn'
-                sh 'apt-get -y install nginx'
             }
         }
         stage('test') {
@@ -20,14 +23,6 @@ pipeline {
             }
             post {
                 always {junit 'test-reports/*.xml'}
-            }
-        }
-        stage('deploy') {
-            steps {
-                sh '''
-                chmod +x .scripts/nginx.sh
-                ./scripts/nginx.sh
-                '''
             }
         }
     }

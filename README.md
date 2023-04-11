@@ -311,3 +311,16 @@ ssh -N -f -L localhost:8080:localhost:8080 -i ~/.ssh/myawskey.pem admin@ec2-ipnu
 - add DockerPipeline plugin (same as above)
 - add job/pipeline to jenkins (same as above) 
 - run BuildNow...watch it run the flask tests
+
+## try adding a deploy step
+
+Following this one:
+
+- https://github.com/ishwar6/django_ci_cd
+
+Want to:
+- set up stuff
+- run tests
+- if tests work, deploy with nginx (on the jenkins server???)
+
+
