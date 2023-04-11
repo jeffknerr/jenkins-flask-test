@@ -4,15 +4,15 @@ pipeline {
         stage('build') {
             steps {
                 sh 'python3 --version'
-                sh 'apt-get -y install python3-pip'
+                sh 'sudo apt-get -y install python3-pip'
                 sh 'ls -al /'
                 sh 'id'
                 sh 'ls -al /usr/local'
-                sh 'pip3 install pip3 --upgrade'
-                sh 'pip3 install flask'
-                sh 'pip3 install xmlrunner'
-                sh 'pip3 install gunicorn'
-                sh 'apt-get -y install nginx'
+                sh 'sudo pip3 install pip3 --upgrade'
+                sh 'sudo pip3 install flask'
+                sh 'sudo pip3 install xmlrunner'
+                sh 'sudo pip3 install gunicorn'
+                sh 'sudo apt-get -y install nginx'
             }
         }
         stage('test') {
@@ -26,8 +26,8 @@ pipeline {
         stage('deploy') {
             steps {
                 sh '''
-                chmod +x .scripts/nginx.sh
-                ./scripts/nginx.sh
+                sudo chmod +x .scripts/nginx.sh
+                sudo ./scripts/nginx.sh
                 '''
             }
         }
