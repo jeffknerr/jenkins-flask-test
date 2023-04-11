@@ -4,10 +4,10 @@ pipeline {
         stage('build') {
             steps {
                 sh 'python3 --version'
-                sh 'sudo apt-get -y install python3-pip'
                 sh 'ls -al /'
                 sh 'id'
                 sh 'ls -al /usr/local'
+                sh 'sudo apt-get -y install python3-pip'
                 sh 'sudo pip3 install pip3 --upgrade'
                 sh 'sudo pip3 install flask'
                 sh 'sudo pip3 install xmlrunner'
