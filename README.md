@@ -271,4 +271,43 @@ run my python unit tests.
 What else can I do with this?? How to deploy to a real server (after
 the tests succeed)??
 
+## set up AWS EC2 instance of jenkins server
 
+- install AWS debian bullseye instance
+- install jenkins, openjdk, and docker
+```
+sudo apt-get install openjdk-11-jdk
+java --version
+
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \\n  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+sudo vim  /etc/apt/sources.list.d/jenkins.list
+deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+sudo apt update
+sudo apt install jenkins
+ps -ef | grep jenk
+sudo systemctl status jenkins
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+sudo mkdir /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+cd /etc/apt/sources.list.d
+sudo vim docker.list
+deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian   bullseye stable
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+ps -ef | grep dock
+docker images
+ls -al /var/run/docker.sock
+```
+- add jenkins user to docker group
+```
+sudo vim /etc/group
+sudo systemctl restart jenkins
+```
+- once jenkins is running, use ssh port-forwarding to connect to localhost:8080
+```
+ssh -N -f -L localhost:8080:localhost:8080 -i ~/.ssh/myawskey.pem admin@ec2-ipnumber.us-east-2.compute.amazonaws.com
+```
+- add DockerPipeline plugin (same as above)
+- add job/pipeline to jenkins (same as above) 
+- run BuildNow...watch it run the flask tests
