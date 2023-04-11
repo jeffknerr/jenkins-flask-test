@@ -4,7 +4,7 @@ pipeline {
         stage('build') {
             steps {
                 sh 'python3 --version'
-                sh 'apt-get -y python3-pip'
+                sh 'apt-get -y install python3-pip'
                 sh 'ls -al /'
                 sh 'id'
                 sh 'ls -al /usr/local'
